@@ -1,0 +1,42 @@
+<?xml version = "1.0"?>
+<robot name = "bot_chassis" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+	<xacro:macro name = "chassis" params = "translation">
+        <!-- ****only**** first link without inertia -->
+		<link name = "base_footprint"/>
+		<!-- info of joint from link "base_footprint" to link "base_link" -->
+        <joint name = "base_footprint_to_base_link" type = "fixed">
+            <parent link = "base_footprint"/>
+            <child link = "base_link"/>
+            <origin rpy = "0.0 0.0 0.0" xyz = "${translation}"/>
+        </joint>
+        <!-- info of link "base_link" -->
+        <link name = "base_link">
+            <!-- inertia value from solidwork -->
+            <inertial>
+                <origin xyz="0.0 0.0 0.03945" rpy="0.0 0.0 0.0"/>
+                <mass value="1.35102"/>
+                <inertia ixx = "0.03530352651" ixy = "0.00061839087" ixz = "-0.00000000287"
+                    iyy = "0.06188733571" iyz = "0.00000004254" izz = "0.09403556522"/>
+            </inertial>
+            <!-- visual & collision import from stl file -->
+            <visual>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/chassis.STL"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/chassis.STL"/>
+                </geometry>
+            </collision>
+        </link>
+        <!-- color of link "base_link" in gazebo -->
+        <gazebo reference = "base_link">
+            <material>Gazebo/White</material>
+        </gazebo>
+	</xacro:macro>
+</robot>

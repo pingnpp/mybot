@@ -1,0 +1,13 @@
+<?xml version = "1.0"?>
+<launch>
+    <!-- robot description -->
+    <include file = "$(find bot_description)/launch/robot_struc.launch"/>
+    <!-- world gazebo -->
+    <include file = "$(find bot_gazebo)/launch/world.launch"/>
+    <!-- import robot to gazebo world -->
+    <!-- arg -x -y -z = position to spawn -->
+    <node name = "spawn_urdf" pkg = "gazebo_ros" type = "spawn_model" respawn = "false" output = "screen" 
+        args = "-urdf -model mybot -param robot_description -x -9 -y 7 -z 0.5"/>
+    <!-- teleop keyboard -->
+    <include file = "$(find teleop)/launch/teleop_keyboard.launch"/>
+</launch>

@@ -1,0 +1,81 @@
+<?xml version = "1.0"?>
+<robot name = "bot_caster" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <!-- build macro name "caster" -->
+    <!-- input arg
+        1. name of caster
+        2. translation from link "baselink" -->
+	<xacro:macro name = "caster" params = "name translation">
+        <!-- info of joint from link "base_link" to link "${name}_fork" -->
+        <joint name = "${name}_fork_joint" type = "continuous">
+            <parent link = "base_link"/>
+            <child link = "${name}_fork"/>
+            <origin rpy = "0.0 0.0 0.0" xyz = "${translation}"/>
+            <axis xyz = "0 0 1"/>
+        </joint>
+        <!-- info of link "${name}_fork" -->
+        <link name = "${name}_fork">
+            <!-- inertia value from solidwork -->
+            <inertial>
+                <origin xyz="0.0 -0.01874 -0.00547" rpy="${-Pi / 5.5} 0.0 ${-Pi / 2}"/>
+                <mass value="0.0118"/>
+                <inertia ixx = "0.00000302621" ixy = "-0.00000000001" ixz = "-0.00000000001"
+                    iyy = "0.00000319798" iyz = "0.00000093488" izz = "0.00000403574"/>
+            </inertial>
+            <!-- visual & collision import from stl file -->
+            <visual>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/fork.STL"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/fork.STL"/>
+                </geometry>
+            </collision>
+        </link>
+        <!-- color of link "${name}_fork" in gazebo -->
+        <gazebo reference = "${name}_fork">
+            <material>Gazebo/White</material>
+        </gazebo>
+        <!-- info of joint from link "${name}_fork" to link "${name}_caster" -->
+        <joint name = "${name}_caster_joint" type = "continuous">
+            <parent link = "${name}_fork"/>
+            <child link = "${name}_caster"/>
+            <origin rpy = "0.0 0.0 0.0" xyz = "-0.022 0.0 -0.03"/>
+            <axis xyz = "0 1 0"/>
+        </joint>
+        <!-- info of link "${name}_caster" -->
+        <link name = "${name}_caster">
+            <!-- inertia value from solidwork -->
+            <inertial>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 ${-Pi / 2} ${-Pi / 2}"/>
+                <mass value="0.05842"/>
+                <inertia ixx = "0.00001203145" ixy = "0.0" ixz = "0.0"
+                    iyy = "0.000017248" iyz = "0.0" izz = "0.00001203145"/>
+            </inertial>
+            <!-- visual & collision import from stl file -->
+            <visual>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/caster.STL"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/caster.STL"/>
+                </geometry>
+            </collision>
+        </link>
+        <!-- color & mu of link "${name}_caster" in gazebo -->
+        <gazebo reference = "${name}_caster">
+            <mu1>1.0</mu1>
+            <mu2>1.0</mu2>
+            <material>Gazebo/Black</material>
+        </gazebo>
+    </xacro:macro>
+</robot>

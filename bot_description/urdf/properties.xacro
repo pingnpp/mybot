@@ -1,0 +1,17 @@
+<?xml version = "1.0"?>
+<robot xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- Pi value -->
+    <xacro:property name = "Pi" value = "3.1415926535897931"/>
+    <!-- chassis properties -->
+    <xacro:property name = "chassis_Z_offset" value = "0.0508"/>
+    <!-- wheel properties -->
+    <xacro:property name = "U_max" value = "1000.0"/>
+    <xacro:property name = "V_max" value = "1000.0"/>
+    <xacro:property name = "wheel_joint_damp" value = "1.0"/>
+    <xacro:property name = "wheel_joint_fric" value = "1.0"/>
+    <xacro:property name = "wheel_Y_offset" value = "0.1746"/>
+    <!-- caster properties -->
+    <xacro:property name = "caster_X_offset" value = "0.2"/>
+    <xacro:property name = "caster_Y_offset" value = "0.13"/>
+    <xacro:property name = "caster_Z_offset" value = "0.0042"/>
+</robot>

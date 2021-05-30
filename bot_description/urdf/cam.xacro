@@ -1,0 +1,78 @@
+<?xml version = "1.0"?>
+<robot name = "bot_cam" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <!-- define camera_link = 0.05 -->
+    <xacro:property name = "camera_link" value = "0.05" />
+    <!-- build macro name "cam" -->
+    <!-- input arg
+        1. translation from link "baselink"
+        2. rotation from link "baselink" -->
+	<xacro:macro name = "cam" params = "translation rotation">
+        <!-- info of joint from link "base_link" to link "camera_link" -->
+        <joint name = "camera_joint" type = "fixed">
+            <parent link = "base_link"/>
+            <child link = "camera_link"/>
+            <origin rpy = "${rotation}" xyz = "${translation}"/>
+        </joint>
+        <!-- info of link "camera_link" -->
+        <link name = "camera_link">
+            <!-- collision & visual & inertial from http://gazebosim.org/tutorials?tut=ros_gzplugins -->
+            <collision>
+                <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0"/>
+                <geometry>
+                    <box size = "${camera_link} ${camera_link} ${camera_link}"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0"/>
+                <geometry>
+                    <box size = "${camera_link} ${camera_link} ${camera_link}"/>
+                </geometry>
+                <material name = "red"/>
+            </visual>
+            <inertial>
+                <mass value = "1e-5" />
+                <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0"/>
+                <inertia ixx = "1e-6" ixy = "0.0" ixz = "0.0" iyy = "1e-6" iyz = "0.0" izz = "1e-6" />
+            </inertial>
+        </link>
+        <!-- gazebo plugin from http://gazebosim.org/tutorials?tut=ros_gzplugins -->
+        <gazebo reference = "camera_link">
+            <sensor type = "camera" name = "camera1">
+                <update_rate>30.0</update_rate>
+                <camera name="head">
+                    <horizontal_fov>1.3962634</horizontal_fov>
+                    <image>
+                        <width>800</width>
+                        <height>800</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.02</near>
+                        <far>300</far>
+                    </clip>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.007</stddev>
+                    </noise>
+                </camera>
+                <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>0.0</updateRate>
+                    <cameraName>mybot/camera</cameraName>
+                    <imageTopicName>image_raw</imageTopicName>
+                    <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                    <frameName>camera_link</frameName>
+                    <hackBaseline>0.07</hackBaseline>
+                    <distortionK1>0.0</distortionK1>
+                    <distortionK2>0.0</distortionK2>
+                    <distortionK3>0.0</distortionK3>
+                    <distortionT1>0.0</distortionT1>
+                    <distortionT2>0.0</distortionT2>
+                </plugin>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+</robot>

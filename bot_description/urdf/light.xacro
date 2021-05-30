@@ -1,0 +1,37 @@
+<?xml version = "1.0"?>
+<robot name = "bot_light" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <!-- build macro name "cam" -->
+    <!-- input arg
+        1. name of light
+        2. translation from link "baselink"
+        3. rotation from link "baselink" -->
+	<xacro:macro name = "light" params = "name translation rotation">
+        <!-- info of joint from link "base_link" to link "${name}_light" -->
+        <joint name = "${name}_light_joint" type = "fixed">
+            <parent link = "base_link"/>
+            <child link = "${name}_light"/>
+            <origin rpy = "${rotation}" xyz = "${translation}"/>
+        </joint>
+        <!-- info of link "${name}_light" with gazebo plugin-->
+        <link name = "${name}_light">
+            <light name = 'light_source1' type = 'spot'>
+                <pose>0 0 0.0 0 0 0</pose>
+                <attenuation>
+                    <range>30</range>
+                    <linear>0.05</linear>
+                </attenuation>
+                <diffuse>0.5 1 1 1</diffuse>
+                <specular>1 1 1 1</specular>
+                <spot>
+                    <inner_angle>0.3</inner_angle>
+                    <outer_angle>0.35</outer_angle>
+                    <falloff>1</falloff>
+                </spot>
+                <direction>0 0 -1</direction>
+            </light>
+        </link>
+
+    </xacro:macro>
+</robot>

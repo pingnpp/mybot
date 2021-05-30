@@ -1,0 +1,72 @@
+<?xml version = "1.0"?>
+<robot name = "bot_lidar" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <!-- build macro name "lidar" -->
+    <!-- input arg
+        1. translation from link "baselink"
+        2. rotation from link "baselink" -->
+	<xacro:macro name = "lidar" params = "translation rotation">
+        <!-- info of joint from link "base_link" to link "lidar_link" -->
+        <joint name = "lidar_joint" type = "fixed">
+            <origin xyz = "${translation}" rpy = "${rotation}"/>
+            <parent link = "base_link"/>
+            <child link = "lidar_link"/>
+        </joint>
+        <!-- info of link "lidar_link" -->
+        <link name = "lidar_link">
+            <!-- collision & visual & inertial from http://gazebosim.org/tutorials?tut=ros_gzplugins -->
+            <collision>
+                <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0"/>
+                <geometry>
+                    <box size = "0.1 0.1 0.1"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz = "0.0 0.0 0.0" rpy = "0.0 0.0 0.0"/>
+                <geometry>
+                    <box size = "0.1 0.1 0.1"/>
+                </geometry>
+            </visual>
+            <inertial>
+                <mass value = "1e-5" />
+                <origin xyz = "0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <inertia ixx = "1e-6" ixy = "0.0" ixz = "0.0" iyy = "1e-6" iyz = "0.0" izz = "1e-6" />
+            </inertial>
+        </link>
+        <!-- gazebo plugin from http://gazebosim.org/tutorials?tut=ros_gzplugins -->
+        <gazebo reference="lidar_link">
+            <sensor type="ray" name="head_hokuyo_sensor">
+                <pose>0 0 0 0 0 0</pose>
+                <visualize>false</visualize>
+                <update_rate>40</update_rate>
+                <ray>
+                    <scan>
+                        <horizontal>
+                            <!-- sample & angle ref from ydlidar X30 -->
+                            <samples>2700</samples>
+                            <resolution>1</resolution>
+                            <min_angle>${-Pi}</min_angle>
+                            <max_angle>${Pi}</max_angle>
+                        </horizontal>
+                    </scan>
+                    <range>
+                        <!-- min & max use default of hokuyo -->
+                        <min>0.1</min>
+                        <max>30.0</max>
+                        <resolution>0.01</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.01</stddev>
+                    </noise>
+                </ray>
+                <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+                    <topicName>/mybot/laser/scan</topicName>
+                    <frameName>lidar_link</frameName>
+                </plugin>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+</robot>

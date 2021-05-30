@@ -1,0 +1,49 @@
+<?xml version = "1.0"?>
+<robot name = "bot_wheel" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <!-- import variable from properties.xacro -->
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <!-- build macro name "wheel" -->
+    <!-- input arg
+        1. name of wheel
+        2. translation from link "baselink" -->
+	<xacro:macro name = "wheel" params = "name translation">
+        <!-- info of joint from link "base_link" to link "${name}_wheel" -->
+        <joint name = "${name}_wheel_joint" type = "continuous">
+            <parent link = "base_link"/>
+            <child link = "${name}_wheel"/>
+            <origin rpy = "0.0 0.0 0.0" xyz = "${translation}"/>
+            <axis xyz = "0 1 0"/>
+            <limit effort = "${U_max}" velocity = "${V_max}"/>
+            <joint_properties damping = "${wheel_joint_damp}" friction = "${wheel_joint_fric}"/>
+        </joint>
+        <!-- info of link "${name}_wheel" -->
+		<link name = "${name}_wheel">
+            <!-- inertia value from solidwork -->
+            <inertial>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 ${-Pi / 2} ${-Pi / 2}"/>
+                <mass value="0.40916"/>
+                <inertia ixx = "0.00032478888" ixy = "0.0" ixz = "0.0"
+                    iyy = "0.0005101297" iyz = "0.0" izz = "0.00032478888"/>
+            </inertial>
+            <!-- visual & collision import from stl file -->
+            <visual>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/wheel.STL"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin rpy = "0.0 0.0 0.0" xyz = "0.0 0.0 0.0"/>
+                <geometry>
+                    <mesh filename = "package://bot_description/stl/wheel.STL"/>
+                </geometry>
+            </collision>
+        </link>
+        <!-- color & mu of link "${name}_wheel" in gazebo -->
+        <gazebo reference = "${name}_wheel">
+            <mu1>1.0</mu1>
+            <mu2>1.0</mu2>
+            <material>Gazebo/Black</material>
+        </gazebo>
+	</xacro:macro>
+</robot>

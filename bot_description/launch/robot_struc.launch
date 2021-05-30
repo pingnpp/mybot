@@ -1,0 +1,14 @@
+<?xml version = "1.0"?>
+<launch>
+    <!-- robot description -->
+    <param name = "robot_description" command = "$(find xacro)/xacro $(find bot_description)/urdf/robot_struc.xacro" />
+    <!-- robot state publisher -->
+    <node name = "robot_state_publisher" pkg = "robot_state_publisher" type = "robot_state_publisher"
+        ns="mybot" respawn="false" output="screen">
+        <!-- <remap from="/joint_states" to="/mybot/joint_states" /> -->
+    </node>
+    <!-- joint state publisher -->
+    <node name = "joint_state_publisher" pkg = "joint_state_publisher" type = "joint_state_publisher"/>
+    <!-- rviz show robot description with config rviz -->
+    <node name = "rviz" pkg = "rviz" type = "rviz" args = "-d $(find bot_description)/rviz/rviz_config.rviz"/>
+</launch>

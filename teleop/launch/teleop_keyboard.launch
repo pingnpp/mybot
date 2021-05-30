@@ -1,0 +1,7 @@
+<?xml version = "1.0"?>
+<launch>
+    <!-- run python node from file "key_input.py" with arg topic ros to pub-->
+    <node pkg = "teleop" name = "key_input" type = "key_input.py" output = "screen" args = "/vel_raw"/>
+    <!-- run python node from file "analyze_vel.py" -->
+    <node pkg = "teleop" name = "analyze_vel" type = "analyze_vel.py" output = "screen"/>
+</launch>

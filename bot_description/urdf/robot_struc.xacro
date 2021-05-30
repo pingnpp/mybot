@@ -1,0 +1,64 @@
+<?xml version = "1.0"?>
+<robot name = "mybot" xmlns:xacro = "http://www.ros.org/wiki/xacro">
+    <xacro:include filename = "$(find bot_description)/urdf/properties.xacro"/>
+    <xacro:include filename = "$(find bot_description)/urdf/chassis.xacro"/>
+    <xacro:include filename = "$(find bot_description)/urdf/wheel.xacro"/>
+    <xacro:include filename = "$(find bot_description)/urdf/caster.xacro"/>
+    <xacro:include filename = "$(find bot_description)/urdf/cam.xacro"/>
+    <xacro:include filename = "$(find bot_description)/urdf/lidar.xacro"/>
+    <!-- <xacro:include filename = "$(find bot_description)/urdf/light.xacro"/> -->
+    <xacro:chassis
+        translation = "0.0 0.0 ${chassis_Z_offset}"/>
+    
+    <!-- caster wheel -->
+    <xacro:caster name = "FL" 
+        translation = "${caster_X_offset} ${caster_Y_offset} ${caster_Z_offset}"/>
+    <xacro:caster name = "FR" 
+        translation = "${caster_X_offset} ${-caster_Y_offset} ${caster_Z_offset}"/>
+    <xacro:caster name = "BL" 
+        translation = "-${caster_X_offset} ${caster_Y_offset} ${caster_Z_offset}"/>
+    <xacro:caster name = "BR" 
+        translation = "-${caster_X_offset} ${-caster_Y_offset} ${caster_Z_offset}"/>
+    
+    <!-- wheel -->
+    <xacro:wheel name = "left" 
+        translation = "0 ${wheel_Y_offset} 0.00"/>
+    <xacro:wheel name = "right" 
+        translation = "0 ${-wheel_Y_offset} 0.00"/>
+    
+    <!-- sensor -->
+    <xacro:cam translation = "0.0 0.0 0.2" rotation = "0.0 0.0 0.0"/>
+    <xacro:lidar translation = "0.0 0.0 0.15" rotation = "0.0 0.0 0.0"/>
+
+    <!-- light -->
+    <!-- <xacro:light name = "eiei" translation = "0.0 0.0 0.3" rotation = "0.0 0.0 0.0"/> -->
+
+    <!-- gazebo control with gazebo plugin name "differential_drive_controller" -->
+    <gazebo>
+        <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <updateRate>50</updateRate>
+            <!-- joint name of left wheel -->
+            <leftJoint>left_wheel_joint</leftJoint>
+            <!-- joint name of right wheel -->
+            <rightJoint>right_wheel_joint</rightJoint>
+            <!-- range from left wheel to right wheel -->
+            <wheelSeparation>${wheel_Y_offset * 2}</wheelSeparation>
+            <!-- diameter of wheel -->
+            <wheelDiameter>${chassis_Z_offset * 2}</wheelDiameter>
+            <!-- torque & acceleration of motor -->
+            <wheelAcceleration>20.0</wheelAcceleration>
+            <wheelTorque>200</wheelTorque>
+            <torque>200</torque>
+            <!-- other use default from http://gazebosim.org/tutorials?tut=ros_gzplugins -->
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <robotBaseFrame>base_footprint</robotBaseFrame>
+            <odometrySource>1</odometrySource>
+            <publishWheelTF>true</publishWheelTF>
+            <publishOdom>true</publishOdom>
+            <publishWheelJointState>true</publishWheelJointState>
+            <legacyMode>false</legacyMode>
+        </plugin>
+    </gazebo>
+</robot>
